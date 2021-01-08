@@ -42,6 +42,7 @@ libloading = "0.3"
 spin = "0.4.7"
 x86 = "0.34.0"
 time = "0.2.23"
+rand = "0.8.1"
 
 
 [dev-dependencies]

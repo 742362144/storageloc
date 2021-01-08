@@ -5,12 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="34a46e73-242c-49dc-bcb9-004bf281bca9" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../../server/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../server/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../server/src/cmd/invoke.rs" beforeDir="false" afterPath="$PROJECT_DIR$/../../server/src/cmd/invoke.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../server/src/cmd/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/../../server/src/cmd/mod.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../server/src/cmd/sched.rs" beforeDir="false" afterPath="$PROJECT_DIR$/../../server/src/cmd/sched.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../server/src/db.rs" beforeDir="false" afterPath="$PROJECT_DIR$/../../server/src/db.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../server/src/server.rs" beforeDir="false" afterPath="$PROJECT_DIR$/../../server/src/server.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

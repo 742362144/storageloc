@@ -146,7 +146,7 @@ impl Invoke {
     #[instrument(skip(self, db, dst))]
     pub(crate) async fn apply(self, db: &Db, dst: &mut Connection) -> crate::Result<()> {
 
-        db.enque(self);
+        db.enque(Invoke{key:self.key.clone(), value: self.value.clone(), expire: None});
 
         let val = self.value.clone();
         // Set the value in the shared database state.

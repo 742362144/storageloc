@@ -16,6 +16,8 @@ pub use subscribe::{Subscribe, Unsubscribe};
 mod unknown;
 pub(crate) mod sched;
 
+pub(crate) mod executor;
+
 pub use unknown::Unknown;
 
 pub mod cycles;
