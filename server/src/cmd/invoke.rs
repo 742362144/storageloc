@@ -34,7 +34,7 @@ pub struct Invoke {
     key: String,
 
     /// the value to be stored
-    value: Bytes,
+    pub(crate) value: Bytes,
 
     /// When to expire the key
     expire: Option<Duration>,
@@ -145,9 +145,12 @@ impl Invoke {
     /// to execute a received command.
     #[instrument(skip(self, db, dst))]
     pub(crate) async fn apply(self, db: &Db, dst: &mut Connection) -> crate::Result<()> {
+
+        db.enque(self);
+
         let val = self.value.clone();
         // Set the value in the shared database state.
-        db.set(self.key, self.value, self.expire);
+        // db.set(self.key, self.value, self.expire);
 
         // type Proc = unsafe extern "C" fn(Rc<Db>) -> Pin<Box<Generator<Yield=u64, Return=InvokeResult>>>;
         type Proc = unsafe extern "C" fn(Rc<&Db>) -> Pin<Box<Generator<Yield=u64, Return=u64>>>;

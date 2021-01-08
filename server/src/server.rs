@@ -227,6 +227,8 @@ impl Listener {
     async fn run(&mut self) -> crate::Result<()> {
         info!("accepting inbound connections");
 
+        self.db.run();
+
         loop {
             // Wait for a permit to become available
             //

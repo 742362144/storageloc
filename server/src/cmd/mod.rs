@@ -14,9 +14,11 @@ mod subscribe;
 pub use subscribe::{Subscribe, Unsubscribe};
 
 mod unknown;
-mod sched;
+pub(crate) mod sched;
 
 pub use unknown::Unknown;
+
+pub mod cycles;
 
 use std::thread;
 use bitflags::_core::time::Duration;

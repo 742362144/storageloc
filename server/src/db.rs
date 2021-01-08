@@ -1,9 +1,14 @@
-use tokio::sync::{broadcast, Notify};
+use tokio::sync::{broadcast, Notify, Semaphore};
 use tokio::time::{self, Duration, Instant};
 
 use bytes::Bytes;
 use std::collections::{BTreeMap, HashMap};
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, Mutex, RwLock};
+use std::collections::VecDeque;
+use crate::cmd::invoke::InvokeResult;
+use crate::cmd::Invoke;
+use std::rc::Rc;
+use std::sync::atomic::{AtomicBool, AtomicIsize, AtomicUsize, Ordering};
 
 /// Server state shared across all connections.
 ///
@@ -22,6 +27,9 @@ pub struct Db {
     /// Handle to shared state. The background task will also have an
     /// `Arc<Shared>`.
     shared: Arc<Shared>,
+
+    waiting: RwLock<VecDeque<Invoke>>,
+    limit_connections: Arc<AtomicUsize>,
 }
 
 #[derive(Debug)]
@@ -114,7 +122,11 @@ impl Db {
         // Start the background task.
         tokio::spawn(purge_expired_tasks(shared.clone()));
 
-        Db { shared }
+        Db {
+            shared,
+            waiting: RwLock::new(VecDeque::new()),
+            limit_connections: Arc::new(),
+        }
     }
 
     /// Get the value associated with a key.
@@ -252,7 +264,37 @@ impl Db {
             .unwrap_or(0)
     }
 
+    pub fn enque(&self, cmd: Invoke) {
+        // Acquire the lock, get the entry and clone the value.
+        //
+        // Because data is stored using `Bytes`, a clone here is a shallow
+        // clone. Data is not copied.
+        // self.limit_connections.acquire().await.unwrap().forget();
+        self.waiting.write().push_back(cmd);
+    }
 
+    pub fn deque(&self) -> Invoke {
+        // Acquire the lock, get the entry and clone the value.
+        //
+        // Because data is stored using `Bytes`, a clone here is a shallow
+        // clone. Data is not copied.
+        // self.limit_connections.add_permits(1);
+        self.waiting.write().pop_front()
+    }
+
+    pub fn run(&self) {
+        // start background thread
+        use std::thread;
+        use super::cmd::sched::RoundRobin;
+
+        let mut round = RoundRobin::new(1, 1, Arc::new(self.clone()));
+        thread::spawn(move || {
+            loop {
+                round.run();
+                // time::Duration::from_millis(1000);
+            }
+        });
+    }
 }
 
 impl Drop for Db {
